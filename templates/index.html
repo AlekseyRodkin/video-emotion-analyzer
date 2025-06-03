@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Анализ эмоций видео</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        .container { max-width: 600px; margin: auto; }
+        .error { color: red; }
+        .message { color: green; }
+        input[type="file"] { margin: 20px 0; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Анализ эмоций в видео</h1>
+        <p>Загрузите MP4-видео для анализа эмоций.</p>
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".mp4" required>
+            <br>
+            <button type="submit">Анализировать</button>
+        </form>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if results %}
+            <h2>Результаты для: {{ video_name }}</h2>
+            <table>
+                <tr>
+                    <th>Эмоция</th>
+                    <th>Процент</th>
+                </tr>
+                {% for emotion, percentage in results.items() %}
+                <tr>
+                    <td>{{ emotion }}</td>
+                    <td>{{ percentage }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+</body>
+</html>
