@@ -7,12 +7,13 @@ from transformers import CLIPProcessor, CLIPModel
 import uuid
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # Лимит 50 МБ
 
 # Инициализация модели CLIP
 model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
-# Список эмоций
+# Список эмоций (английские названия)
 emotion_labels = [
     "harmony and calm",
     "awe and wonder",
@@ -26,6 +27,22 @@ emotion_labels = [
     "gambling excitement",
     "thrill and excitement"
 ]
+
+# Словарь с русскими переводами
+emotion_translations = {
+    "harmony and calm": "гармония и спокойствие",
+    "awe and wonder": "восторг и удивление",
+    "nostalgia and memories": "ностальгия и воспоминания",
+    "intellectual enrichment": "интеллектуальное обогащение",
+    "creative inspiration": "творческое вдохновение",
+    "unity and connection": "единство и связь",
+    "mind games and exploration": "игры разума и исследование",
+    "freedom and adventure": "свобода и приключения",
+    "triumph and achievement": "триумф и достижение",
+    "gambling excitement": "азарт и волнение",
+    "thrill and excitement": "острые ощущения"
+}
+
 # Папка для временного хранения видео
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -89,8 +106,15 @@ def upload_video():
                 emotion_percentages = analyze_video(video_path)
                 # Удаление временного файла
                 os.remove(video_path)
-                # Форматирование результатов
-                results = {emotion: f"{percentage:.2f}%" for emotion, percentage in emotion_percentages.items()}
+                # Форматирование результатов с переводами
+                results = [
+                    {
+                        "english": emotion,
+                        "russian": emotion_translations[emotion],
+                        "percentage": f"{percentage:.2f}%"
+                    }
+                    for emotion, percentage in emotion_percentages.items()
+                ]
                 return render_template('index.html', results=results, video_name=file.filename)
             except Exception as e:
                 os.remove(video_path)
