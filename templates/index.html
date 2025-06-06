@@ -2,46 +2,151 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Анализ эмоций видео</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ эмоций в видео</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-        .container { max-width: 600px; margin: auto; }
-        .error { color: red; }
-        .message { color: green; }
-        input[type="file"] { margin: 20px 0; }
-        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #45a049; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            color: #3498db;
+            font-size: 14px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+        }
+        input[type="file"]::-webkit-file-upload-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background-color: #2980b9;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .results-section {
+            margin-top: 30px;
+        }
+        h2 {
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        td {
+            background-color: #f9f9f9;
+            color: #2c3e50;
+        }
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+        tr:hover td {
+            background-color: #e8f4fa;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Анализ эмоций в видео</h1>
-        <p>Загрузите MP4-видео для анализа эмоций.</p>
+        <p>Загрузите MP4-видео, чтобы узнать, какие эмоции оно вызывает.</p>
         <form method="post" enctype="multipart/form-data">
             <input type="file" name="file" accept=".mp4" required>
-            <br>
             <button type="submit">Анализировать</button>
         </form>
         {% if error %}
             <p class="error">{{ error }}</p>
         {% endif %}
         {% if results %}
-            <h2>Результаты для: {{ video_name }}</h2>
-            <table>
-                <tr>
-                    <th>Эмоция</th>
-                    <th>Процент</th>
-                </tr>
-                {% for emotion, percentage in results.items() %}
-                <tr>
-                    <td>{{ emotion }}</td>
-                    <td>{{ percentage }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+            <div class="results-section">
+                <h2>Результаты для: {{ video_name }}</h2>
+                <table>
+                    <tr>
+                        <th>Эмоция (Emotion)</th>
+                        <th>Процент</th>
+                    </tr>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.english }} ({{ result.russian }})</td>
+                        <td>{{ result.percentage }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
         {% endif %}
     </div>
 </body>
